@@ -4,7 +4,11 @@ python -m torch.distributed.launch --nproc_per_node=1 --master_port 12345 main_e
 python -m torch.distributed.launch --nproc_per_node=1 --master_port 12345 main_evaluation.py --dataset prcc --cfg configs/res50_cels_cal.yaml --gpu 0 --root data --gen_path ./disc/prcc_query
 
 
+<<<<<<< HEAD:README.md
 python main_evaluation.py --dataset prcc --cfg configs/res50_cels_cal.yaml --gpu 0 --root data --gen_path ./disc/prcc_query 
+=======
+python main_evaluation.py --dataset prcc --cfg configs/res50_cels_cal.yaml --gpu 0 --root data --gen_path ./disc/prcc_query
+>>>>>>> f3f4a80efcad49ecd053d3b5dfc2643e0d8a32e2:OpenGait-master/README.md
 
 ==========================================================================================
 
