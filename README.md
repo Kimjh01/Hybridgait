@@ -4,7 +4,8 @@ python -m torch.distributed.launch --nproc_per_node=1 --master_port 12345 main_e
 python -m torch.distributed.launch --nproc_per_node=1 --master_port 12345 main_evaluation.py --dataset prcc --cfg configs/res50_cels_cal.yaml --gpu 0 --root data --gen_path ./disc/prcc_query
 
 
-python main_evaluation.py --dataset prcc --cfg configs/res50_cels_cal.yaml --gpu 0 --root data --gen_path ./disc/prcc_query
+python main_evaluation.py --dataset prcc --cfg configs/res50_cels_cal.yaml --gpu 0 --root data --gen_path ./disc/prcc_query 
+
 ==========================================================================================
 
 python datasets/GREW/rearrange_GREW.py --input_path D:\Grew_reduce --output_path D:\Grew_reduce_rearranged
