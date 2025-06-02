@@ -1,0 +1,13 @@
+[2025-06-02 02:51:01] [INFO]: {'find_unused_parameters': False, 'enable_float16': True, 'with_test': False, 'fix_BN': False, 'log_iter': 100, 'restore_ckpt_strict': True, 'optimizer_reset': False, 'scheduler_reset': False, 'restore_hint': 0, 'save_iter': 30000, 'save_name': 'SkeletonGaitPP', 'sync_BN': False, 'total_iter': 180000, 'sampler': {'batch_shuffle': True, 'batch_size': [32, 4], 'frames_num_fixed': 30, 'frames_num_max': 50, 'frames_num_min': 25, 'sample_type': 'fixed_ordered', 'type': 'TripletSampler', 'frames_skip_num': 4}, 'transform': [{'type': 'Compose', 'trf_cfg': [{'type': 'RandomPerspective', 'prob': 0.2}, {'type': 'BaseSilCuttingTransform'}, {'type': 'RandomHorizontalFlip', 'prob': 0.2}, {'type': 'RandomRotate', 'prob': 0.2}]}]}
+[2025-06-02 02:51:01] [INFO]: {'model': 'SkeletonGaitPP', 'Backbone': {'in_channels': 3, 'blocks': [1, 4, 4, 1], 'C': 2}, 'SeparateBNNecks': {'class_num': 20000}}
+[2025-06-02 02:51:01] [INFO]: {'dataset_name': 'GREW', 'dataset_root': 'D:/Grew_reduce_dataset', 'num_workers': 1, 'dataset_partition': './datasets/GREW/GREW.json', 'remove_no_gallery': False, 'cache': False, 'test_dataset_name': 'GREW', 'data_in_use': [True, True]}
+[2025-06-02 02:51:01] [INFO]: -------- Train Pid List --------
+[2025-06-02 02:51:01] [INFO]: [00001train, 00002train, ..., 01000train]
+[2025-06-02 02:51:01] [INFO]: {'lr': 0.1, 'momentum': 0.9, 'solver': 'SGD', 'weight_decay': 0.0005}
+[2025-06-02 02:51:01] [INFO]: {'gamma': 0.1, 'milestones': [80000, 120000, 150000], 'scheduler': 'MultiStepLR'}
+[2025-06-02 02:51:01] [INFO]: Parameters Count: 95.20061M
+[2025-06-02 02:51:01] [INFO]: Model Initialization Finished!
+[2025-06-02 06:41:59] [INFO]: Iteration 00100, Cost 13859.48s, triplet_loss=0.5015, triplet_hard_loss=2.9224, triplet_loss_num=25035.1328, triplet_mean_dist=1.4675, softmax_loss=10.1583, softmax_accuracy=0.0050
+[2025-06-02 10:52:21] [INFO]: Iteration 00200, Cost 15022.19s, triplet_loss=0.2610, triplet_hard_loss=1.4607, triplet_loss_num=27438.6484, triplet_mean_dist=0.8175, softmax_loss=8.4159, softmax_accuracy=0.0115
+[2025-06-02 14:49:39] [INFO]: Iteration 00300, Cost 14237.95s, triplet_loss=0.2276, triplet_hard_loss=1.3617, triplet_loss_num=28252.3457, triplet_mean_dist=0.6974, softmax_loss=7.3964, softmax_accuracy=0.0169
+[2025-06-02 18:46:44] [INFO]: Iteration 00400, Cost 14225.24s, triplet_loss=0.2114, triplet_hard_loss=1.1540, triplet_loss_num=26131.5801, triplet_mean_dist=0.6854, softmax_loss=6.8407, softmax_accuracy=0.0274
