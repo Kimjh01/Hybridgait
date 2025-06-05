@@ -43,9 +43,9 @@ sympy==1.13.1
 tensorboard==2.19.0
 tensorboard-data-server==0.7.2
 threadpoolctl==3.6.0
-torch==2.5.1
-torchaudio==2.5.1
-torchvision==0.20.1
+# torch==2.5.1
+# torchaudio==2.5.1
+# torchvision==0.20.1
 tqdm==4.67.1
 typing_extensions @ file:///C:/b/abs_0ffjxtihug/croot/typing_extensions_1734714875646/work
 urllib3 @ file:///C:/b/abs_7bst06lizn/croot/urllib3_1737133657081/work
