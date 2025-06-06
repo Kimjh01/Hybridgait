@@ -1,3 +1,4 @@
+GREW에 해당하는 코드. 다른 데이터셋에 맞게 변형하면 됨.
 [환경세팅]
 conda create -n [이름] python=3.10
 conda activate [이름]
@@ -9,6 +10,8 @@ OpenGait-master\configs\skeletongait\skeletongait++_GREW.yaml 에서
 - data_cfg.dataset_root -> 경로 수정 ex) "Grew_reduce_dataset"
 - data_cfg.dataset_partition 경로 수정 ex) ./datasets/GREW/GREW.json -> OpenGait-master/datasets/GREW/GREW.json
 - sampler.batchsize 32,4 -> 16,2 로 수정
+- trainer_cfg.save_iter 30000 -> 1000으로 수정
+- (선택) trainer_cfg.log_iter 변경
 
 OpenGait-master\opengait\utils\common.py 에서
 - 144번째 줄 "./configs/default.yaml" -> "OpenGait-master/configs/default.yaml" 수정.
