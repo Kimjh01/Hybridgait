@@ -2,7 +2,7 @@
 conda create -n [이름] python=3.10
 conda activate [이름]
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia -y
-pip install -r requirements.txt 
+pip install -r requirements.txt   *numpy==1.26.4로 변경해야함.
 
 [코드수정]
 OpenGait-master\configs\skeletongait\skeletongait++_GREW.yaml 에서
