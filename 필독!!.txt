@@ -1,3 +1,17 @@
-실습실 컴 가상환경 python=3.10 생성 후
+[환경세팅]
+conda create -n [이름] python=3.10
+conda activate [이름]
 conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.1 -c pytorch -c nvidia -y
-요거 실행한다음에 pip install -r requirements.txt 할것~~
+pip install -r requirements.txt 
+
+[코드수정]
+OpenGait-master\configs\skeletongait\skeletongait++_GREW.yaml 에서
+- data_cfg.dataset_root -> 경로 수정 ex) "Grew_reduce_dataset"
+- data_cfg.dataset_partition 경로 수정 ex) ./datasets/GREW/GREW.json -> OpenGait-master/datasets/GREW/GREW.json
+- sampler.batchsize 32,4 -> 16,2 로 수정
+
+OpenGait-master\opengait\utils\common.py 에서
+- 144번째 줄 "./configs/default.yaml" -> "OpenGait-master/configs/default.yaml" 수정.
+
+[학습실행]
+python OpenGait-master/opengait/main.py --cfgs OpenGait-master/configs/skeletongait/skeletongait++_GREW.yaml --phase train --log_to_file
