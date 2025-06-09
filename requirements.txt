@@ -26,7 +26,7 @@ mkl_fft
 mkl_random
 mpmath
 networkx
-numpy==2.0.1
+numpy==1.26.4
 opencv-python==4.11.0.86
 packaging==25.0
 pillow
