@@ -1,3 +1,10 @@
+# TODO LIST
+
+- 각 폴더 이름 바꾸기
+- 각 폴더에 원본 출처 정리
+- 각 레포에 필요한 파일만 남기기
+- 논문 올리기 + 모델 설명
+
 # HybridGait: Integrated Pipeline for Gait Data Preprocessing, Augmentation, and Training
 
 **HybridGait** provides an end-to-end pipeline for gait recognition —
