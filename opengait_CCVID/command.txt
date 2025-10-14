@@ -1,0 +1,10 @@
+
+
+
+python Opengait-main/OpenGait-master/opengait/main.py --cfgs Opengait-main/OpenGait-master/configs/skeletongait/skeletongait++_CCVID.yaml --phase train --log_to_file
+
+
+
+
+ Step 3: Generate Pose Heatmaps
+python OpenGait-master\\datasets\\pretreatment_heatmap_ccvid.py --pose_data_path CCVID2_pose_pkl --save_root CCVID2_posemap --dataset_name GREW

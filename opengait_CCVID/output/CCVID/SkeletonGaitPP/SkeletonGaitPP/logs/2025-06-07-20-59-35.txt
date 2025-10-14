@@ -1,0 +1,11 @@
+[2025-06-07 20:59:35] [INFO]: {'find_unused_parameters': False, 'enable_float16': True, 'with_test': False, 'fix_BN': False, 'log_iter': 1, 'restore_ckpt_strict': True, 'optimizer_reset': False, 'scheduler_reset': False, 'restore_hint': 0, 'save_iter': 1000, 'save_name': 'SkeletonGaitPP', 'sync_BN': False, 'total_iter': 20000, 'sampler': {'batch_shuffle': True, 'batch_size': [16, 2], 'frames_num_fixed': 30, 'frames_num_max': 50, 'frames_num_min': 25, 'sample_type': 'fixed_ordered', 'type': 'TripletSampler', 'frames_skip_num': 4}, 'transform': [{'type': 'Compose', 'trf_cfg': [{'type': 'RandomPerspective', 'prob': 0.2}, {'type': 'BaseSilCuttingTransform'}, {'type': 'RandomHorizontalFlip', 'prob': 0.2}, {'type': 'RandomRotate', 'prob': 0.2}]}]}
+[2025-06-07 20:59:35] [INFO]: [WARNING] Failed to set class_num automatically: name 'json' is not defined
+[2025-06-07 20:59:35] [INFO]: {'model': 'SkeletonGaitPP', 'Backbone': {'in_channels': 3, 'blocks': [1, 4, 4, 1], 'C': 2}, 'SeparateBNNecks': {'class_num': 200}}
+[2025-06-07 20:59:35] [INFO]: {'dataset_name': 'CCVID', 'dataset_root': 'C:/Users/user/Desktop/capstone/CCVID2_dataset', 'num_workers': 1, 'dataset_partition': 'C:/Users/user/Desktop/capstone/Opengait-main/OpenGait-master/datasets/CCVID/CCVID.json', 'remove_no_gallery': False, 'cache': False, 'test_dataset_name': 'CCVID', 'data_in_use': [True, True]}
+[2025-06-07 20:59:35] [INFO]: -------- Train Pid List --------
+[2025-06-07 20:59:35] [INFO]: [002train, 003train, ..., 225train]
+[2025-06-07 20:59:35] [INFO]: {'lr': 0.1, 'momentum': 0.9, 'solver': 'SGD', 'weight_decay': 0.0005}
+[2025-06-07 20:59:35] [INFO]: {'gamma': 0.1, 'milestones': [80000, 120000, 150000], 'scheduler': 'MultiStepLR'}
+[2025-06-07 20:59:35] [INFO]: Parameters Count: 14.09981M
+[2025-06-07 20:59:35] [INFO]: Model Initialization Finished!
+[2025-06-07 21:01:18] [INFO]: Iteration 00001, Cost 104.24s, triplet_loss=0.4162, triplet_hard_loss=1.6470, triplet_loss_num=696.1875, triplet_mean_dist=1.7646, softmax_loss=5.7988, softmax_accuracy=0.0039

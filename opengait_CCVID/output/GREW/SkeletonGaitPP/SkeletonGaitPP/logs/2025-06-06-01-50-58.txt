@@ -1,0 +1,9 @@
+[2025-06-06 01:50:58] [INFO]: {'find_unused_parameters': False, 'enable_float16': True, 'with_test': False, 'fix_BN': False, 'log_iter': 100, 'restore_ckpt_strict': True, 'optimizer_reset': False, 'scheduler_reset': False, 'restore_hint': 0, 'save_iter': 30000, 'save_name': 'SkeletonGaitPP', 'sync_BN': False, 'total_iter': 180000, 'sampler': {'batch_shuffle': True, 'batch_size': [16, 2], 'frames_num_fixed': 30, 'frames_num_max': 50, 'frames_num_min': 25, 'sample_type': 'fixed_ordered', 'type': 'TripletSampler', 'frames_skip_num': 4}, 'transform': [{'type': 'Compose', 'trf_cfg': [{'type': 'RandomPerspective', 'prob': 0.2}, {'type': 'BaseSilCuttingTransform'}, {'type': 'RandomHorizontalFlip', 'prob': 0.2}, {'type': 'RandomRotate', 'prob': 0.2}]}]}
+[2025-06-06 01:50:58] [INFO]: {'model': 'SkeletonGaitPP', 'Backbone': {'in_channels': 3, 'blocks': [1, 4, 4, 1], 'C': 2}, 'SeparateBNNecks': {'class_num': 20000}}
+[2025-06-06 01:50:59] [INFO]: {'dataset_name': 'GREW', 'dataset_root': 'C:/Users/user/Desktop/capstone/CCVID2_dataset', 'num_workers': 1, 'dataset_partition': 'Opengait-main\\OpenGait-master\\datasets\\GREW\\ccvid2_split.json', 'remove_no_gallery': False, 'cache': False, 'test_dataset_name': 'GREW', 'data_in_use': [True, True]}
+[2025-06-06 01:50:59] [INFO]: -------- Train Pid List --------
+[2025-06-06 01:50:59] [INFO]: [002train, 003train, ..., 225train]
+[2025-06-06 01:50:59] [INFO]: {'lr': 0.1, 'momentum': 0.9, 'solver': 'SGD', 'weight_decay': 0.0005}
+[2025-06-06 01:50:59] [INFO]: {'gamma': 0.1, 'milestones': [80000, 120000, 150000], 'scheduler': 'MultiStepLR'}
+[2025-06-06 01:50:59] [INFO]: Parameters Count: 95.20061M
+[2025-06-06 01:50:59] [INFO]: Model Initialization Finished!
