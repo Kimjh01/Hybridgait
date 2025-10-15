@@ -1,214 +1,203 @@
-# TODO LIST
+# HybridGait: A Robust Multimodal Gait Recognition Pipeline Against Clothing Variations
 
-- 각 폴더 이름 바꾸기
-- 각 폴더에 원본 출처 정리
-- 각 레포에 필요한 파일만 남기기
-- 논문 올리기 + 모델 설명
-
-# HybridGait: Integrated Pipeline for Gait Data Preprocessing, Augmentation, and Training
-
-**HybridGait** provides an end-to-end pipeline for gait recognition —
-from **dataset preprocessing** to **data augmentation (DLCR)** and **model training** based on a customized OpenGait framework.
-
-This project performs **DLCR (Diffusion + LLM Clothes Reconstruction)**–based augmentation
-and improves **OpenGait** for **single-GPU training efficiency** and better dataset compatibility.
+> **Summary in One Line**
+> **HybridGait** provides an end-to-end integrated pipeline — from **dataset preprocessing → DLCR-based (clothing reconstruction) augmentation → single-GPU training with OpenGait**.
+> The paper introduces **ΔJoint (inter-frame joint difference)**, **Upper/Lower-body separation weights (UL)**, and **Cross-Attention / FlashAttention fusion**, achieving robust gait recognition under clothing and background variations on **CCVID, CASIA-B, GREW**, and custom in-the-wild datasets.
 
 ---
 
-## 1. Overview
+## Table of Contents
 
-HybridGait aims to:
-
-* Standardize multiple gait datasets (CCVID, CASIA-B, GREW, etc.) into the **GREW format**
-* Enhance dataset diversity through **DLCR-based appearance and pose augmentation**
-* Improve the **OpenGait framework** for single-GPU operation and simplified training
-
-The repository includes all three main stages:
-**Dataset Preprocessing → DLCR Augmentation → OpenGait Training.**
+* [Background & Contributions](#background--contributions)
+* [Repository Structure](#repository-structure)
+* [Quick Start](#quick-start)
+* [Dataset Preprocessing](#dataset-preprocessing)
+* [DLCR-Based Clothing Augmentation](#dlcr-based-clothing-augmentation)
+* [Model & Training (Single GPU)](#model--training-single-gpu)
+* [References](#references)
+* [Attribution & Original Source Notice](#attribution--original-source-notice)
 
 ---
 
-## 2. Repository Structure
+## Background & Contributions
 
-Below is an overview of the HybridGait repository layout.
+* **Problem**
+  Silhouette-based gait recognition suffers from **clothing, carried objects, illumination, and viewpoint variations**.
+  In contrast, skeleton-based approaches are robust to appearance changes but highly sensitive to **pose estimation quality and frame consistency**.
+  Therefore, robust gait recognition requires **silhouette–skeleton fusion** and **dataset expansion reflecting real-world variability**.
+
+* **Solution**
+
+  1. Introduce **DLCR** for synthetic data augmentation to diversify clothing conditions and simulate real-world distributions.
+  2. Employ **Cross-Attention (FlashAttention)** for fine-grained interaction between silhouette and skeleton modalities.
+  3. Apply **ΔJoint + Upper/Lower (UL) weighting** to model temporal motion and emphasize lower-body gait dynamics.
+  4. Refactor **OpenGait** for **single-GPU FP16 training** with reproducibility and efficiency.
+
+---
+
+## Repository Structure
 
 ```
 HybridGait/
-├── Datasets_Preprocess/
-│   ├── CASIA-B_origin/
-│   │   ├── frame_split.py           # Split video into frame images
-│   │   ├── rearranged_casia_b.py    # Rearrange into GREW format
-│   │   └── make_pose_gei.py
-│   ├── CCVID_origin/
-│   │   ├── rename.py                # Fix ID conflicts
-│   │   ├── rearrangement_main.py    # GREW-style rearrangement
-│   │   └── probe.py                 # Create probe/gallery sets
-│   ├── CCVID_augmentation/
-│   │   ├── crop_augmented_data_2.py
-│   │   ├── crop_augmented_data_5.py
-│   │   ├── crop_augmented_data_10.py
-│   │   ├── rename.py
-│   │   ├── rearrangement_main.py
-│   │   └── probe.py
+├── datasets_preprocess/
+│   ├── casia_b/
+│   ├── ccvid/
+│   ├── ccvid_aug/
 │   └── requirements.txt
 │
 ├── dlcr/
-│   ├── LLaVA/
-│   │   └── extract_clothes_descriptions.py
+│   ├── llava/
 │   ├── llama/
-│   │   └── summarize_clothes_descriptions.py
-│   ├── Self-Correction-Human-Parsing/
-│   │   └── simple_extractor.py
-│   ├── stable-diffusion/
-│   │   ├── generate_data.py
-│   │   └── utils/
-│   └── DG/
-│       └── train.py
+│   ├── schp/
+│   └── sd_inpaint/
 │
-├── Opengait/
-│   └── OpenGait-master/
-│       ├── configs/
-│       │   └── skeletongait/
-│       │       └── skeletongait++_GREW.yaml
-│       ├── opengait/
-│       │   ├── main.py
-│       │   ├── modeling/
-│       │   ├── utils/
-│       │   └── data/
-│       └── logs/
-│
-├── opengait_CCVID/
+├── opengait/
 │   ├── configs/
-│   │   └── ccvid.yaml
 │   ├── opengait/
-│   │   ├── main.py
-│   │   ├── modeling/
-│   │   ├── utils/
-│   │   └── data/
-│   └── results/
+│   └── logs/ or results/
 │
+├── opengait_ccvid/
 └── README.md
 ```
 
+> **Tip:** Use lowercase `snake_case` for all folders and files.
+> Script naming convention: `verb_object.py` (e.g., `split_frames.py`, `make_probe_gallery.py`)
+
 ---
 
-## 3. Dataset Preprocessing (`Datasets_Preprocess`)
-
-This stage converts raw datasets (e.g., CASIA-B, CCVID) into a **GREW-compatible structure**
-for unified training input across datasets.
-
-### CASIA-B Example
+## Quick Start
 
 ```bash
-# (1) Split videos into frames
-python Datasets_Preprocess/CASIA-B_origin/frame_split.py
+# 0) Environment setup
+conda create -n hybridgait python=3.10 -y
+conda activate hybridgait
+pip install -r datasets_preprocess/requirements.txt
 
-# (2) Generate pose and GEI images
-python Datasets_Preprocess/CASIA-B_origin/make_pose_gei.py
+# 1) Dataset preprocessing (example: CASIA-B)
+python datasets_preprocess/casia_b/split_frames.py
+python datasets_preprocess/casia_b/make_pose_gei.py
+python datasets_preprocess/casia_b/rearrange_to_grew.py
 
-# (3) Rearrange into GREW directory format
-python Datasets_Preprocess/CASIA-B_origin/rearranged_casia_b.py
-```
+# 2) (Optional) Augmented CCVID preprocessing
+python datasets_preprocess/ccvid_aug/crop_augmented_k5.py
+python datasets_preprocess/ccvid_aug/rearrange_to_grew.py
+python datasets_preprocess/ccvid_aug/make_probe_gallery.py
 
-### CCVID Example
+# 3) DLCR-based clothing augmentation
+python dlcr/llava/extract_clothes_descriptions.py --src <img_root> --ckpt <llava_ckpt>
+python dlcr/llama/summarize_clothes_descriptions.py --src <desc.jsonl>
+python dlcr/schp/parse_clothes.py --src <img_root> --part upper
+python dlcr/sd_inpaint/inpaint_clothes.py --src <img_root> --prompts <prompts.jsonl> --n 10
 
-```bash
-# (1) Fix ID conflicts
-python Datasets_Preprocess/CCVID_origin/rename.py
-
-# (2) Convert to GREW format
-python Datasets_Preprocess/CCVID_origin/rearrangement_main.py
-
-# (3) Build probe/gallery sets
-python Datasets_Preprocess/CCVID_origin/probe.py
-```
-
-### CCVID Augmentation (Optional)
-
-```bash
-# (1) Crop by number of people per frame
-python Datasets_Preprocess/CCVID_augmentation/crop_augmented_data_5.py
-
-# (2) Rename and rearrange
-python Datasets_Preprocess/CCVID_augmentation/rename.py
-python Datasets_Preprocess/CCVID_augmentation/rearrangement_main.py
-
-# (3) Generate probe/gallery configuration
-python Datasets_Preprocess/CCVID_augmentation/probe.py
+# 4) Training (OpenGait single-GPU)
+python opengait/opengait/main.py \
+  --cfgs opengait/configs/skeletongait/skeletongait++_grew.yaml \
+  --phase train --log_to_file
 ```
 
 ---
 
-## 4. DLCR Augmentation Pipeline (`dlcr`)
+## Dataset Preprocessing
 
-**DLCR (Diffusion + LLM Clothes Reconstruction)** performs appearance- and pose-level augmentation.
-It extracts clothing descriptions, generates masks, and synthesizes new variants using diffusion models.
-
-| Module               | Function                           | Example Command                                                        |
-| -------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
-| **LLaVA**            | Extract clothing descriptions      | `python extract_clothes_descriptions.py -s <path> --model_path <ckpt>` |
-| **LLaMA**            | Summarize & parse descriptions     | `python summarize_clothes_descriptions.py`                             |
-| **SCHP**             | Generate person masks              | `python simple_extractor.py --dataset lip ...`                         |
-| **Stable Diffusion** | Generate synthetic variants        | `python generate_data.py --use_discriminator True ...`                 |
-| **DG**               | Train discriminator for refinement | `python train.py --datadir <path>`                                     |
-
-All generated data follow GREW-like folder structures,
-allowing immediate use for training in OpenGait.
+* Standardize all datasets (e.g., CCVID, CASIA-B) into a **GREW-compatible format**.
+* Includes **detection → alignment → GEI generation → pose extraction (COCO-17)** → sequence synchronization and quality filtering.
 
 ---
 
-## 5. Training Pipeline (`Opengait/OpenGait-master`, `opengait_CCVID`)
+## DLCR-Based Clothing Augmentation
 
-After preprocessing and augmentation,
-the GREW-style dataset can be used to train **SkeletonGait++** models
-via the customized single-GPU version of OpenGait.
+* **Pipeline Overview:**
+  (1) Extract clothing descriptions via LLaVA →
+  (2) Summarize/refine via LLaMA →
+  (3) Parse body/clothing masks using SCHP →
+  (4) Perform Stable Diffusion inpainting.
+  The same subject, pose, and background are maintained while **only clothing appearance varies**.
+  About **25% of training images** are expanded to **10 new clothing variants** each.
 
-### OpenGait (GREW-based Training)
-
-```bash
-python Opengait/OpenGait-master/opengait/main.py \
-  --cfgs Opengait/OpenGait-master/configs/skeletongait/skeletongait++_GREW.yaml \
-  --phase train \
-  --log_to_file
-```
-
-### CCVID-Specific Training (Optional)
-
-```bash
-python opengait_CCVID/opengait/main.py \
-  --cfgs opengait_CCVID/configs/ccvid.yaml \
-  --phase train
-```
-
-> The OpenGait version in HybridGait has been refactored for **single-GPU training**,
-> with simplified data loading and improved efficiency.
-> Further architecture details and benchmark results will be added later.
+* **Goal:**
+  Generate synthetic silhouettes and skeletons to improve robustness under clothing variations.
 
 ---
 
-## 6. Full Execution Summary
+## Model & Training (Single GPU)
+
+* **Cross-Attention (FlashAttention)**
+  Converts silhouette/skeleton features into Q/K/V and models fine-grained modality interaction using FlashAttention.
+
+* **ΔJoint + Upper/Lower (UL) weighting**
+
+  * ΔJoint: Inter-frame joint difference using a central difference kernel `[-0.5, 0, +0.5]` to encode temporal dynamics.
+  * UL separation: Split upper/lower body weights (initial upper: 0.3, lower: 0.7, optimized via softmax).
+
+* **Training Setup**
+  Single RTX 3070 (8GB), FP16 precision, Triplet + CE loss, 30-frame sequences (interval 4), up to 720 frames for testing.
+
+---
+
+### Appendix: Command Summary
 
 ```bash
-# 1️. Dataset Preprocessing
-python Datasets_Preprocess/CASIA-B_origin/frame_split.py
-python Datasets_Preprocess/CASIA-B_origin/rearranged_casia_b.py
+# CCVID preprocessing
+python datasets_preprocess/ccvid/rename_ids.py
+python datasets_preprocess/ccvid/rearrange_to_grew.py
+python datasets_preprocess/ccvid/make_probe_gallery.py
 
-# 2️. DLCR Augmentation
-python dlcr/LLaVA/extract_clothes_descriptions.py -s <path> --model_path <ckpt>
-python dlcr/llama/summarize_clothes_descriptions.py
-python dlcr/Self-Correction-Human-Parsing/simple_extractor.py --dataset lip ...
-python dlcr/stable-diffusion/generate_data.py --use_discriminator True ...
-python dlcr/DG/train.py --datadir <path>
+# CCVID augmentation (optional)
+python datasets_preprocess/ccvid_aug/crop_augmented_k5.py
+python datasets_preprocess/ccvid_aug/rearrange_to_grew.py
+python datasets_preprocess/ccvid_aug/make_probe_gallery.py
 
-# 3️. OpenGait Training
-python Opengait/OpenGait-master/opengait/main.py \
-  --cfgs Opengait/OpenGait-master/configs/skeletongait/skeletongait++_GREW.yaml \
-  --phase train
+# Training (example: GREW)
+python opengait/opengait/main.py \
+  --cfgs opengait/configs/skeletongait/skeletongait++_grew.yaml \
+  --phase train --log_to_file
 ```
 
 ---
 
-> **HybridGait** provides a unified end-to-end framework that covers
-> **Dataset Structuring → GREW Conversion → DLCR Augmentation → OpenGait Training.**
-> Future updates will include refined model architectures and performance evaluations.
+## References
 
+* **OpenGait**
+  Fan et al., *OpenGait: A Comprehensive Benchmark Study for Gait Recognition Towards Better Practicality*, IEEE TPAMI, 2025.
+  [GitHub: https://github.com/ShiqiYu/OpenGait](https://github.com/ShiqiYu/OpenGait)
+
+* **DLCR (Diffusion + LLM Clothes Reconstruction)**
+  Siddiqui et al., *DLCR: A Generative Data Expansion Framework via Diffusion for Clothes-Changing Person Re-Identification*, IEEE/CVF WACV, 2025.
+  [GitHub: https://github.com/CroitoruAlin/dlcr](https://github.com/CroitoruAlin/dlcr)
+
+* **Datasets**
+
+  * **CASIA-B** — Yu et al., *A Benchmark for Gait Recognition*, IEEE TPAMI, 2006.
+    [Official dataset link](http://www.cbsr.ia.ac.cn/english/Gait%20Databases.asp)
+  * **CCVID** — Hou et al., *Clothes-Changing Gait Recognition via Shape-Texture Disentanglement*, CVPR 2022.
+    [Paper link](https://openaccess.thecvf.com/content/CVPR2022/html/Hou_Clothes-Changing_Gait_Recognition_via_Shape-Texture_Disentanglement_CVPR_2022_paper.html)
+  * **GREW** — Zhang et al., *GREW: A Large-scale Benchmark for Gait Recognition in the Wild*, CVPR 2021.
+    [GitHub: https://github.com/Gait3D/GREW-Benchmark](https://github.com/Gait3D/GREW-Benchmark)
+
+> Usage Notice
+> Please check and comply with the **license and usage terms** of all referenced datasets and open-source frameworks.
+> This repository is intended for **research purposes only**, and proper attribution is required for any derivative or commercial use.
+
+---
+
+## Attribution & Original Source Notice
+
+This repository is **modified and extended** based on the following open-source projects:
+
+* **OpenGait**
+  Original repository: [ShiqiYu/OpenGait](https://github.com/ShiqiYu/OpenGait)
+  Fan et al., *OpenGait: Revisiting Gait Recognition Towards Better Practicality*, CVPR 2023 (Extended version: TPAMI 2025).
+  Customized here for single-GPU training and structural simplification.
+
+* **DLCR**
+  Original repository: [CroitoruAlin/dlcr](https://github.com/CroitoruAlin/dlcr)
+  DLCR: Data Expansion via Diffusion + LLM for Clothes-Changing Person Re-ID.
+  Selected modules have been restructured and integrated into the gait recognition pipeline.
+
+---
+
+> Note: Please respect the copyright and usage terms of the original repositories.
+> The OpenGait repository is designated for **academic use only**,
+> and the DLCR repository does **not explicitly specify a license**—redistribution or commercial use should be verified individually.
+
+---
