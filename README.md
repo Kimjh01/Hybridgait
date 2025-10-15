@@ -165,15 +165,6 @@ python opengait/opengait/main.py \
   Siddiqui et al., *DLCR: A Generative Data Expansion Framework via Diffusion for Clothes-Changing Person Re-Identification*, IEEE/CVF WACV, 2025.
   [GitHub: https://github.com/CroitoruAlin/dlcr](https://github.com/CroitoruAlin/dlcr)
 
-* **Datasets**
-
-  * **CASIA-B** — Yu et al., *A Benchmark for Gait Recognition*, IEEE TPAMI, 2006.
-    [Official dataset link](http://www.cbsr.ia.ac.cn/english/Gait%20Databases.asp)
-  * **CCVID** — Hou et al., *Clothes-Changing Gait Recognition via Shape-Texture Disentanglement*, CVPR 2022.
-    [Paper link](https://openaccess.thecvf.com/content/CVPR2022/html/Hou_Clothes-Changing_Gait_Recognition_via_Shape-Texture_Disentanglement_CVPR_2022_paper.html)
-  * **GREW** — Zhang et al., *GREW: A Large-scale Benchmark for Gait Recognition in the Wild*, CVPR 2021.
-    [GitHub: https://github.com/Gait3D/GREW-Benchmark](https://github.com/Gait3D/GREW-Benchmark)
-
 > Usage Notice
 > Please check and comply with the **license and usage terms** of all referenced datasets and open-source frameworks.
 > This repository is intended for **research purposes only**, and proper attribution is required for any derivative or commercial use.
