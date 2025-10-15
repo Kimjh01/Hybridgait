@@ -4,7 +4,7 @@ This document outlines the full preprocessing and training pipeline for the GREW
 
 ---
 
-## 🔧 Step 1: Rearranging the Raw GREW Dataset
+## Step 1: Rearranging the Raw GREW Dataset
 
 Rearrange the dataset structure to match OpenGait requirements:
 
@@ -20,7 +20,7 @@ python datasets/GREW/rearrange_GREW_pose.py \
 
 ---
 
-## 📆 Step 2: Preprocess to PKL Format
+## Step 2: Preprocess to PKL Format
 
 Convert silhouettes and pose data to `.pkl` format:
 
@@ -41,7 +41,7 @@ python datasets/pretreatment.py \
 
 ---
 
-## 🔥 Step 3: Generate Pose Heatmaps
+## Step 3: Generate Pose Heatmaps
 
 > **Note:** Requires modification to `pretreatment_heatmap.py` for GREW pose format support.
 
@@ -54,7 +54,7 @@ python datasets/pretreatment_heatmap.py \
 
 ---
 
-## 🪨 Step 4: Link Silhouettes and Heatmaps
+## Step 4: Link Silhouettes and Heatmaps
 
 > **Note:** Requires modification to `ln_sil_heatmap.py` to support GREW structure.
 
@@ -67,7 +67,7 @@ python datasets/ln_sil_heatmap.py \
 
 ---
 
-## 🏃‍♂️ Step 5: Train SkeletonGait++ Model
+##  Step 5: Train SkeletonGait++ Model
 
 Train the model with customized GREW configuration:
 
@@ -78,7 +78,7 @@ python opengait/main.py \
   --log_to_file
 ```
 
-### ✨ Required File Modifications
+### Required File Modifications
 
 * `utils/msg_manager.py`: Adjust logging for GREW
 * `utils/common.py`: Update utility methods
@@ -87,7 +87,7 @@ python opengait/main.py \
 
 ---
 
-## 📅 Summary
+## Summary
 
 This pipeline covers:
 
